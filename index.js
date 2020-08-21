@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fetch = require('node-fetch');
-const FormData = require('formdata-node');
 require('dotenv').config()
 
 let lastEmbeddedVideoUrl = null;
@@ -17,7 +16,7 @@ client.on('message', msg => {
 
     if (msg.content.startsWith('w2g')) {
         getWatchTogetherLink(lastEmbeddedVideoUrl)
-            .then(url => msg.reply(`Room created at: ${url}`));
+            .then(url => msg.reply(`Room created at: ${url} (video ${lastEmbeddedVideoUrl})`));
     }
 });
 
