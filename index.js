@@ -10,9 +10,9 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-    const embed = msg.embeds.find(embed => embed.type === 'video');
+    const [url] = msg.content.match(/((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?/) || [null];
 
-    lastEmbeddedVideoUrl = embed ? embed.url : lastEmbeddedVideoUrl;
+    lastEmbeddedVideoUrl = url || lastEmbeddedVideoUrl;
 
     if (msg.content.startsWith('w2g')) {
         getWatchTogetherLink(lastEmbeddedVideoUrl)
