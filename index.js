@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fetch = require('node-fetch');
-const FormData = require('form-data');
+const FormData = require('formdata-node');
 require('dotenv').config()
 
 client.on('ready', () => {
@@ -12,7 +12,7 @@ client.on('message', msg => {
     if (!msg.content.startsWith('w2g')) {
         return;
     }
-    
+
     // could use regex here instead
     const videoUrl = msg.content.replace('w2g', '').trim();
 
