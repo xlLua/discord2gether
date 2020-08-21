@@ -4,28 +4,32 @@ const fetch = require('node-fetch');
 const FormData = require('formdata-node');
 require('dotenv').config()
 
+var lastYoutubeUrl;
+
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
 client.on('message', msg => {
+    
+    //pushes every message in to an array
+    if(msg.embeds[0] && msg.embeds[0].type == "video"){
+       lastYoutubeUrl = msg.embeds[0].url;
+    }
+
     if (!msg.content.startsWith('w2g')) {
         return;
     }
 
-    // could use regex here instead
-    const videoUrl = msg.content.replace('w2g', '').trim();
+    //TO DO => could use regex here instead
+    const videoUrl = msg.content.replace('w2g', '').trim() || lastYoutubeUrl;
 
-    getWatchTogetherLink(videoUrl).then(url => msg.reply(`Ewa, hier is uw link bruur: ${url}`));
+    getWatchTogetherLink(videoUrl).then(url => msg.reply(`Room created at: ${url}`));
 });
 
 client.login(process.env.DISCORD_TOKEN);
 
 async function getWatchTogetherLink(videoUrl = '') {
-    // const body = new FormData();
-
-    // body.append("api_key", process.env.W2G_API_KEY);
-    // body.append("share", videoUrl);
 
     const response = await fetch("https://w2g.tv/rooms/create.json", {
         method: "POST",
