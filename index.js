@@ -16,7 +16,7 @@ client.on('message', msg => {
 
     if (msg.content.startsWith('w2g')) {
         getWatchTogetherLink(lastEmbeddedVideoUrl)
-            .then(url => msg.reply(`Room created at: ${url} (video ${lastEmbeddedVideoUrl})`));
+            .then(url => msg.reply(`Room created at: ${url}`));
     }
 });
 
@@ -24,7 +24,8 @@ client.login(process.env.DISCORD_TOKEN);
 
 async function getWatchTogetherLink(videoUrl = '') {
     const response = await fetch("https://w2g.tv/rooms/create.json", {
-        method: "POST",
+        method: 'POST',
+        contentType: 'application/json',
         body: JSON.stringify({
             share: videoUrl,
             api_key: process.env.W2G_API_KEY,
