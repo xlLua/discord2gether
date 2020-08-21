@@ -25,7 +25,9 @@ client.login(process.env.DISCORD_TOKEN);
 async function getWatchTogetherLink(videoUrl = '') {
     const response = await fetch("https://w2g.tv/rooms/create.json", {
         method: 'POST',
-        contentType: 'application/json',
+        headers: {
+            'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
             share: videoUrl,
             api_key: process.env.W2G_API_KEY,
