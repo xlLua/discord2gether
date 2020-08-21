@@ -13,7 +13,7 @@ client.on('message', msg => {
     }
     
     // could use regex here instead
-    const videoUrl = msg.replace('w2g', '').trim();
+    const videoUrl = msg.content.replace('w2g', '').trim();
 
     getWatchTogetherLink(videoUrl).then(url => msg.reply(`Ewa, hier is uw link bruur: ${url}`));
 });
