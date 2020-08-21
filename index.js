@@ -11,8 +11,7 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-    
-    //pushes every message in to an array
+
     if(msg.embeds[0] && msg.embeds[0].type == "video"){
        lastYoutubeUrl = msg.embeds[0].url;
     }
