@@ -4,26 +4,21 @@ const fetch = require('node-fetch');
 const FormData = require('formdata-node');
 require('dotenv').config()
 
-var lastYoutubeUrl;
+let lastEmbeddedVideoUrl = null;
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
 client.on('message', msg => {
+    const embed = msg.embeds.find(embed => embed.type === 'video');
 
-    if(msg.embeds[0] && msg.embeds[0].type == "video"){
-       lastYoutubeUrl = msg.embeds[0].url;
+    lastEmbeddedVideoUrl = embed ? embed.url : lastEmbeddedVideoUrl;
+
+    if (msg.content.startsWith('w2g')) {
+        getWatchTogetherLink(lastEmbeddedVideoUrl)
+            .then(url => msg.reply(`Room created at: ${url}`));
     }
-
-    if (!msg.content.startsWith('w2g')) {
-        return;
-    }
-
-    //TO DO => could use regex here instead
-    const videoUrl = msg.content.replace('w2g', '').trim() || lastYoutubeUrl;
-
-    getWatchTogetherLink(videoUrl).then(url => msg.reply(`Room created at: ${url}`));
 });
 
 client.login(process.env.DISCORD_TOKEN);
