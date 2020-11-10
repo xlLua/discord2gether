@@ -25,6 +25,7 @@
     "ffmpeg-static": "^4.2.7",
     "formdata-node": "^2.2.2",
     "node-fetch": "^2.6.0",
+    "select-random-file": "^1.1.0",
     "utf-8-validate": "^5.0.2"
   }
 }

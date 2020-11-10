@@ -2,10 +2,12 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const fetch = require('node-fetch');
 const vision = require('@google-cloud/vision');
+const selectRandomFile = require('./helpers/select-random-file');
 
 require('dotenv').config()
 
 let lastEmbeddedVideoUrl = null;
+let democratMode = false;
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -23,6 +25,11 @@ client.on('message', msg => {
         return;
     }
 
+    if(msg.content === 'democrat mode') {
+        democratMode = !democratMode;
+        msg.reply('Democrat mode is now '+(democratMode ? 'on' : 'off'));
+    }
+
     if (msg.content.toLowerCase().startsWith('inspire me')) {
         getQuote().then(({quote, url}) => {
             console.log(url);
@@ -34,21 +41,25 @@ client.on('message', msg => {
 });
 
 
+client.on('guildMemberSpeaking', (member, speaking) => {
+    if(democratMode && speaking.bitfield > 0) {
+        playFromDir(member.voice.channel, './sounds/talking/')
+    }
+});
+
 client.on('voiceStateUpdate', async (oldState, newState) => {
     if (oldState.channel !== newState.channel) {
         if (oldState.channel && oldState.channel.name === 'General') {
-            play(oldState.channel, './sounds/disconnected.wav');
+            playFromDir(oldState.channel, './sounds/disconnected/');
         }
 
         if (newState.channel && newState.channel.name === 'General') {
-            const havingAGoodTime = Math.random() <= 0.05;
-            const file = havingAGoodTime ? './sounds/connected-but-its-loud-af.mp3' : './sounds/connected.wav';
-            play(newState.channel, file);
+            playFromDir(newState.channel, './sounds/connected/');
         }
     }
 
     if (oldState.selfDeaf && !newState.selfDeaf) {
-        play(oldState.channel, './sounds/talkpower_granted.wav');
+        playFromDir(oldState.channel, './sounds/undeafened/');
     }
 })
 
@@ -90,6 +101,12 @@ async function getQuote() {
 
 function textToSpeech(text) {
     console.log(text);
+}
+
+async function playFromDir(channel, dir) {
+    const file = await selectRandomFile(dir);
+
+    return play(channel, dir+file);
 }
 
 async function play(channel, file) {
