@@ -17,14 +17,14 @@
   },
   "homepage": "https://github.com/AlexVanderbist/discord2gether#readme",
   "dependencies": {
+    "@discordjs/opus": "^0.3.3",
     "@google-cloud/vision": "^2.1.2",
+    "bufferutil": "^4.0.1",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
+    "ffmpeg-static": "^4.2.7",
     "formdata-node": "^2.2.2",
     "node-fetch": "^2.6.0",
-    "@discordjs/opus": "^0.1.0",
-    "bufferutil": "^4.0.1",
-    "ffmpeg-static": "^4.0.1",
     "utf-8-validate": "^5.0.2"
   }
 }
