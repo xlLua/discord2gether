@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/AlexVanderbist/discord2gether#readme",
   "dependencies": {
+    "@google-cloud/vision": "^2.1.2",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
     "formdata-node": "^2.2.2",
