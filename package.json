@@ -21,6 +21,10 @@
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
     "formdata-node": "^2.2.2",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "@discordjs/opus": "^0.1.0",
+    "bufferutil": "^4.0.1",
+    "ffmpeg-static": "^4.0.1",
+    "utf-8-validate": "^5.0.2"
   }
 }
