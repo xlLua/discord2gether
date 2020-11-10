@@ -33,6 +33,25 @@ client.on('message', msg => {
     }
 });
 
+
+client.on('voiceStateUpdate', async (oldState, newState) => {
+    if (oldState.channel !== newState.channel) {
+        if (oldState.channel && oldState.channel.name === 'General') {
+            play(oldState.channel, './sounds/disconnected.wav');
+        }
+
+        if (newState.channel && newState.channel.name === 'General') {
+            const havingAGoodTime = Math.random() <= 0.05;
+            const file = havingAGoodTime ? './sounds/connected-but-its-loud-af.mp3' : './sounds/connected.wav';
+            play(newState.channel, file);
+        }
+    }
+
+    if (oldState.selfDeaf && !newState.selfDeaf) {
+        play(oldState.channel, './sounds/talkpower_granted.wav');
+    }
+})
+
 client.login(process.env.DISCORD_TOKEN);
 
 async function getWatchTogetherLink(videoUrl = '') {
@@ -71,4 +90,10 @@ async function getQuote() {
 
 function textToSpeech(text) {
     console.log(text);
+}
+
+async function play(channel, file) {
+    const connection = await channel.join();
+
+    connection.play(file);
 }
