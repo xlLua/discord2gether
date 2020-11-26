@@ -3,6 +3,9 @@ const client = new Discord.Client();
 const fetch = require('node-fetch');
 const vision = require('@google-cloud/vision');
 const selectRandomFile = require('./helpers/select-random-file');
+const listenToUser = require('./listenToUser');
+
+const fs = require('fs');
 
 require('dotenv').config()
 
@@ -46,8 +49,24 @@ client.on('message', msg => {
     }
 });
 
+/* async function listenToMember(member) {
+    const connection = await member.voice.channel.join();
+
+    console.log(member)
+
+    const audio = connection.receiver.createStream(member, { mode: 'pcm' });
+    const stream = fs.createWriteStream('./temp/user_audio'+)
+    audio.pipe(stream);
+
+    stream.on('close', () => console.log('stream closed'))
+} */
 
 client.on('guildMemberSpeaking', (member, speaking) => {
+    if (speaking.bitfield) {
+        listenToUser(member)
+        /* listenToMember(member) */
+    }
+
     if (democratMode && speaking.bitfield > 0) {
         playFromDir(member.voice.channel, './sounds/biden/')
     }
@@ -65,15 +84,18 @@ client.on('guildMemberSpeaking', (member, speaking) => {
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
     if (oldState.channel !== newState.channel) {
+        // left general
         if (oldState.channel && oldState.channel.name === 'General') {
             playFromDir(oldState.channel, './sounds/disconnected/');
         }
-
+        
+        // joined general
         if (newState.channel && newState.channel.name === 'General') {
             playFromDir(newState.channel, './sounds/connected/');
         }
     }
 
+    // unmute
     if (oldState.selfDeaf && !newState.selfDeaf) {
         playFromDir(oldState.channel, './sounds/undeafened/');
     }
