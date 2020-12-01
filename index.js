@@ -7,12 +7,14 @@ const listenToUser = require('./listenToUser');
 
 require('dotenv').config();
 
+let generalChannel = null;
 let lastEmbeddedVideoUrl = null;
 let democratMode = false;
 let republicanMode = false;
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    generalChannel = client.channels.cache.find(channel => channel.name === 'general');
 });
 
 client.on('message', msg => {
@@ -39,30 +41,25 @@ client.on('message', msg => {
     }
 
     if (msg.content.toLowerCase().includes('inspir')) {
-        getQuote().then(({ quote, url }) => {
-            console.log(url);
-            const embed = new Discord.MessageEmbed().setImage(url);
-            msg.channel.send(quote, { tts: true, embed: embed });
-        });
+        inspireMe(msg.channel);
     }
 });
 
-/* async function listenToMember(member) {
-    const connection = await member.voice.channel.join();
+function inspireMe(channel = generalChannel) {
+    if (!channel) {
+        return;
+    }
 
-    console.log(member)
-
-    const audio = connection.receiver.createStream(member, { mode: 'pcm' });
-    const stream = fs.createWriteStream('./temp/user_audio'+)
-    audio.pipe(stream);
-
-    stream.on('close', () => console.log('stream closed'))
-} */
+    getQuote().then(({ quote, url }) => {
+        console.log(url);
+        const embed = new Discord.MessageEmbed().setImage(url);
+        channel.send(quote, { tts: true, embed: embed });
+    });
+}
 
 client.on('guildMemberSpeaking', (member, speaking) => {
     if (speaking.bitfield) {
-        listenToUser(member);
-        /* listenToMember(member) */
+        listenToUser({ member, playFromDir, inspireMe });
     }
 
     if (democratMode && speaking.bitfield > 0) {
@@ -89,7 +86,6 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
         // joined general
         if (newState.channel && newState.channel.name === 'General') {
-            listenToUser(newState.member);
         }
     }
 
@@ -135,10 +131,6 @@ async function getQuote() {
     console.log(quote);
 
     return { quote, url };
-}
-
-function textToSpeech(text) {
-    console.log(text);
 }
 
 async function playFromDir(channel, dir) {
