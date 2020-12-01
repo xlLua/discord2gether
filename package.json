@@ -19,13 +19,21 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
     "@google-cloud/vision": "^2.1.2",
+    "@tensorflow-models/speech-commands": "^0.4.2",
+    "@tensorflow/tfjs": "^2.7.0",
     "bufferutil": "^4.0.1",
+    "deepspeech": "^0.9.1",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
     "ffmpeg-static": "^4.2.7",
     "formdata-node": "^2.2.2",
+    "memory-stream": "^1.0.0",
     "node-fetch": "^2.6.0",
+    "node-vad": "^1.1.4",
+    "node-wav": "^0.0.2",
     "select-random-file": "^1.1.0",
-    "utf-8-validate": "^5.0.2"
+    "sox-stream": "^2.0.6",
+    "utf-8-validate": "^5.0.2",
+    "wav": "^1.0.2"
   }
 }
