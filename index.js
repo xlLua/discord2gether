@@ -50,9 +50,12 @@ function inspireMe(channel = generalChannel) {
         return;
     }
 
+    channel.startTyping();
+
     getQuote().then(({ quote, url }) => {
         console.log(url);
         const embed = new Discord.MessageEmbed().setImage(url);
+        channel.stopTyping();
         channel.send(quote, { tts: true, embed: embed });
     });
 }

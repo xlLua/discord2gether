@@ -12,17 +12,21 @@ module.exports = async function listenToUser({ member, playFromDir, inspireMe })
     const connection = await member.voice.channel.join();
 
     const audioStream = connection.receiver.createStream(member);
+
     const decodedStream = new prism.opus.Decoder({ channels: 1, rate: 16000, frameSize: 2000 });
     audioStream.pipe(decodedStream);
+
     let memoryStream = new MemoryStream();
     decodedStream.pipe(memoryStream);
 
-    decodedStream.on('finish', b => {
+    decodedStream.on('finish', () => {
         let audioBuffer = memoryStream.toBuffer();
         const audioLength = (audioBuffer.length / 2) * (1 / desiredSampleRate);
 
-        if (audioLength >= 2.5) {
-            console.log('Not worth,', member.user.username, 'spoke for more than 2.5 seconds.');
+        console.log(member.user.username, ' spoke for ', audioLength);
+
+        if (audioLength >= 1.4 || audioLength <= .7) {
+            // console.log('Not worth, ', member.user.username, 'spoke for more than 1.6 seconds or less than .6 seconds.');
             return;
         }
 
