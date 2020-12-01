@@ -16,21 +16,32 @@ module.exports = async function listenToUser({ member, playFromDir, inspireMe })
     const decodedStream = new prism.opus.Decoder({ channels: 1, rate: 16000, frameSize: 2000 });
     audioStream.pipe(decodedStream);
 
-    let memoryStream = new MemoryStream();
-    decodedStream.pipe(memoryStream);
+    let audioLength = 0;
+    const modelStream = model.createStream();
 
-    decodedStream.on('finish', () => {
-        let audioBuffer = memoryStream.toBuffer();
-        const audioLength = (audioBuffer.length / 2) * (1 / desiredSampleRate);
+    const numberOfSilenceBytes = 4000; // 16000bits -> 2000bytes -> 250ms is 500bytes
+    modelStream.feedAudioContent(Buffer.alloc(numberOfSilenceBytes, 0));
 
-        console.log(member.user.username, ' spoke for ', audioLength);
+    decodedStream.on('data', data => {
+        audioLength += (data.length / 2) * (1 / desiredSampleRate);
 
-        if (audioLength >= 1.4 || audioLength <= .7) {
-            // console.log('Not worth, ', member.user.username, 'spoke for more than 1.6 seconds or less than .6 seconds.');
+        if (audioLength >= 1.4) {
+            // Do not uncomment, spams console and slows things down
+            // console.log('Stopped feeding audio to model, ', member.user.username, 'spoke for more than 1.4 seconds.');
             return;
         }
 
-        let result = model.stt(audioBuffer);
+        modelStream.feedAudioContent(data);
+    });
+
+    decodedStream.on('finish', () => {
+        console.log(member.user.username, ' spoke for ', audioLength);
+
+        if (audioLength < .5) {
+            return;
+        }
+
+        let result = modelStream.finishStream();
 
         console.log(member.user.username, result);
 

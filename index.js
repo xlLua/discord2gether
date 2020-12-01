@@ -56,7 +56,7 @@ function inspireMe(channel = generalChannel) {
         console.log(url);
         const embed = new Discord.MessageEmbed().setImage(url);
         channel.stopTyping();
-        channel.send(quote, { tts: true, embed: embed });
+        channel.send(quote, { tts: false, embed: embed });
     });
 }
 
