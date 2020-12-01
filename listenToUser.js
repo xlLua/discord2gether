@@ -19,7 +19,7 @@ module.exports = async function listenToUser({ member, playFromDir, inspireMe })
     let audioLength = 0;
     const modelStream = model.createStream();
 
-    const numberOfSilenceBytes = 4000; // 16000bits -> 2000bytes -> 250ms is 500bytes
+    const numberOfSilenceBytes = 2000; // 16000bits -> 2000bytes -> 250ms is 500bytes
     modelStream.feedAudioContent(Buffer.alloc(numberOfSilenceBytes, 0));
 
     decodedStream.on('data', data => {
@@ -47,7 +47,7 @@ module.exports = async function listenToUser({ member, playFromDir, inspireMe })
 
         if (
             result.includes('nice') ||
-            ['he is', 'i', 'this', 'is', 'night', 'nights', 'it', 'my', 'most', 'like'].includes(result)
+            ['he is', 'this', 'is', 'night', 'nights', 'it', 'my', 'most', 'like'].includes(result)
         ) {
             playFromDir(member.voice.channel, './sounds/nice/');
             return console.log(member.user.username, '(probably) nice:', result);
