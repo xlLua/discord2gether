@@ -50,12 +50,9 @@ function inspireMe(channel = generalChannel) {
         return;
     }
 
-    channel.startTyping();
-
-    getQuote().then(({ quote, url }) => {
+    getFastQuote().then(({ quote, url }) => {
         console.log(url);
         const embed = new Discord.MessageEmbed().setImage(url);
-        channel.stopTyping();
         channel.send(quote, { tts: true, embed: embed });
     });
 }
@@ -116,6 +113,20 @@ async function getWatchTogetherLink(videoUrl = '') {
 
     return `https://w2g.tv/rooms/${res.streamkey}`;
 }
+
+let quotePromise;
+async function getFastQuote() {
+    if (quotePromise) {
+        promiseToReturn = quotePromise;
+    } else {
+        promiseToReturn = getQuote();
+    }
+
+    quotePromise = getQuote();
+
+    return promiseToReturn;
+}
+getFastQuote();
 
 async function getQuote() {
     const response = await fetch('http://inspirobot.me/api?generate=true');
