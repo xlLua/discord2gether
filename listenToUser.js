@@ -53,7 +53,7 @@ module.exports = async function listenToUser({ member, playFromDir, inspireMe })
             return console.log(member.user.username, '(probably) nice:', result);
         }
 
-        if (result.includes('inspire') || ['spare me', 'aspiring', 'in spite'].includes(result)) {
+        if (result.includes('inspire') || ['spare me', 'in sparing me', 'aspiring', 'in spite', 'despite me in', 'despite me', 'being spied me'].includes(result)) {
             return inspireMe();
         }
 
