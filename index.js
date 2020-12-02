@@ -74,6 +74,8 @@ client.on('message', msg => {
 
             if (total>21) {
                 msg.reply(`u bad xd total = ${total}`)
+                playercards = []
+                dealercards = []            
             }
             else{
                 msg.reply(`${dealercards[0]}, x \n${playercards}\n HIT or STAND`)
