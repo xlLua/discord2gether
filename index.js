@@ -4,6 +4,9 @@ const fetch = require('node-fetch');
 const vision = require('@google-cloud/vision');
 const selectRandomFile = require('./helpers/select-random-file');
 const listenToUser = require('./listenToUser');
+const { length } = require('ffmpeg-static');
+let dealercards = [];
+let playercards = [];
 
 require('dotenv').config();
 
@@ -42,6 +45,75 @@ client.on('message', msg => {
 
     if (msg.content.toLowerCase().includes('inspir')) {
         inspireMe(msg.channel);
+    }
+
+    if(msg.content == "blackjack"){
+       dealercards = []
+       playercards = []
+        
+        for (let x = 0; x < 2; x++) {
+            let card = Math.floor(Math.random()*13)+1;
+            
+            dealercards[x] = card;
+            card = Math.floor(Math.random()*13)+1;
+            
+            playercards[x] = card;
+        }
+        
+        msg.channel.send(`${dealercards[0]}, x \n${playercards[0]}, ${playercards[1]}\n HIT or STAND`)
+    }
+    if(msg.content == "HIT"){
+        let card = Math.floor(Math.random()*13)+1;
+            playercards[playercards.length]= card
+            let total=0
+            playercards.forEach(element => {
+                if(element>10){
+                total+=10 }
+                else{total+=element}
+            });
+
+            if (total>21) {
+                msg.reply(`u bad xd total = ${total}`)
+            }
+            else{
+                msg.reply(`${dealercards[0]}, x \n${playercards}\n HIT or STAND`)
+            }
+
+    }
+    if(msg.content == "STAND"){
+        let dtotal = 0
+        let ptotal = 0
+        playercards.forEach(element => {
+            if(element>10){
+                ptotal+=10 }
+                else{ptotal+=element}
+        });
+        dealercards.forEach(element => {
+            if(element>10){
+                dtotal+=10 }
+                else{dtotal+=element}
+        });
+
+        while(dtotal < 17){
+            let card = Math.floor(Math.random()*13)+1;
+            if(card>10){
+                dtotal+=10 }
+                else{dtotal+=card}
+            dealercards[dealercards.length] = card
+        }
+
+        if(dtotal>21){
+            msg.reply(`${dealercards} \n${playercards}\n dealer bust u win gj xddD`)
+        }
+        else if(ptotal>dtotal){
+            msg.reply(`${dealercards} \n${playercards}\n U WIN xd`)
+        }
+        else if (dtotal > ptotal){
+            msg.reply(`${dealercards} \n${playercards}\n U LOSE xd newb`)
+        }
+        else if (dtotal == ptotal){
+            msg.reply(`${dealercards} \n${playercards}\n PUSH no wins xd`)
+        }
     }
 });
 
